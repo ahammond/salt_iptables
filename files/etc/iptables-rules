@@ -31,6 +31,9 @@
 -A INPUT -s 10.182.4.58 -j ACCEPT
 -A INPUT -s 10.182.10.89 -j ACCEPT
 
+# jenkins01
+-A INPUT -s 10.177.209.81/32 -j ACCEPT
+
 # db-trans-clone
 -A INPUT -s 10.8.1.102/32 -j ACCEPT
 
