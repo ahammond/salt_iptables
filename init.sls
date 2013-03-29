@@ -1,5 +1,5 @@
 {% set iptables = '/etc/iptables-rules' %}
-{{ iptables }}
+{{ iptables }}:
   file.managed:
     - user: root
     - group: root
