@@ -2,6 +2,7 @@
 :INPUT DROP [141:8535]
 :FORWARD ACCEPT [44:2640]
 :OUTPUT ACCEPT [162484:28266479]
+-A INPUT -p icmp -j ACCEPT
 -A INPUT -i tun+ -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -p udp --dport 1194 -m state --state NEW -j ACCEPT
