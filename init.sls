@@ -4,4 +4,5 @@
     - user: root
     - group: root
     - mode: 700
-    - source: salt://iptables/files{{ iptables }}
+    - source: salt://iptables/files{{ iptables }}.sls
+    - template: jinja
