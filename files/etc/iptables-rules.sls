@@ -5,18 +5,22 @@
 -A INPUT -p icmp -j ACCEPT
 -A INPUT -i tun+ -j ACCEPT
 -A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -j ACCEPT
 -A INPUT -p udp --dport 1194 -m state --state NEW -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+{# role specific inbound open ports -#}
 -A INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -m state --state NEW -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -j ACCEPT
+
+{# allow the VPN -#}
 -A INPUT -s 10.8.0.0/16 -j ACCEPT
 
-# ports at the office
+{# ports at the office -#}
 -A INPUT -s 98.173.193.67 -p tcp -j ACCEPT
 -A INPUT -s 98.173.193.68 -p tcp -j ACCEPT
 
-# legacy nodes; these should be removed as chef migration proceeds
+{# legacy nodes; these should be removed as migration proceeds -#}
 -A INPUT -s 10.177.73.60/32 -j ACCEPT
 -A INPUT -s 10.177.64.142/32 -j ACCEPT
 -A INPUT -s 10.177.73.84/32 -j ACCEPT
@@ -25,65 +29,15 @@
 -A INPUT -s 10.177.70.186/32 -j ACCEPT
 -A INPUT -s 10.178.51.115/32 -j ACCEPT
 
-# logstash
--A INPUT -s 10.182.10.185/32 -j ACCEPT
--A INPUT -s 10.182.5.104/32 -j ACCEPT
--A INPUT -s 10.182.2.205/32 -j ACCEPT
--A INPUT -s 10.182.12.58/32 -j ACCEPT
--A INPUT -s 10.182.4.58 -j ACCEPT
--A INPUT -s 10.182.10.89 -j ACCEPT
-
-# jenkins01
--A INPUT -s 10.177.209.81/32 -j ACCEPT
-
-# db-trans-clone
--A INPUT -s 10.8.1.102/32 -j ACCEPT
-
-# chef nodes here
--A INPUT -s 10.178.34.75/32 -j ACCEPT
--A INPUT -s 10.178.52.2/32 -j ACCEPT
--A INPUT -s 10.177.220.91/32 -j ACCEPT
--A INPUT -s 10.179.7.71/32 -j ACCEPT
--A INPUT -s 10.178.49.13/32 -j ACCEPT
--A INPUT -s 10.177.209.84/32 -j ACCEPT
--A INPUT -s 10.177.219.153/32 -j ACCEPT
--A INPUT -s 10.177.209.12/32 -j ACCEPT
--A INPUT -s 10.177.208.175/32 -j ACCEPT
--A INPUT -s 10.178.33.163/32 -j ACCEPT
--A INPUT -s 10.177.194.33/32 -j ACCEPT
--A INPUT -s 10.177.219.2/32 -j ACCEPT
--A INPUT -s 10.177.65.191/32 -j ACCEPT
--A INPUT -s 10.178.58.11/32 -j ACCEPT
--A INPUT -s 10.177.59.154/32 -j ACCEPT
--A INPUT -s 10.178.34.6/32 -j ACCEPT
--A INPUT -s 10.177.208.144/32 -j ACCEPT
--A INPUT -s 10.177.200.117/32 -j ACCEPT
--A INPUT -s 10.178.66.111/32 -j ACCEPT
--A INPUT -s 10.177.219.117/32 -j ACCEPT
--A INPUT -s 10.177.64.142/32 -j ACCEPT
--A INPUT -s 10.178.50.219/32 -j ACCEPT
--A INPUT -s 10.178.146.6/32 -j ACCEPT
--A INPUT -s 10.177.209.54/32 -j ACCEPT
--A INPUT -s 10.177.208.86/32 -j ACCEPT
--A INPUT -s 10.177.208.143/32 -j ACCEPT
--A INPUT -s 10.177.65.201/32 -j ACCEPT
--A INPUT -s 10.177.197.233/32 -j ACCEPT
--A INPUT -s 10.177.219.180/32 -j ACCEPT
--A INPUT -s 10.178.40.198/32 -j ACCEPT
--A INPUT -s 10.177.208.85/32 -j ACCEPT
--A INPUT -s 10.177.220.92/32 -j ACCEPT
--A INPUT -s 10.177.73.60/32 -j ACCEPT
--A INPUT -s 10.178.54.121/32 -j ACCEPT
--A INPUT -s 10.178.58.8/32 -j ACCEPT
--A INPUT -s 10.177.209.97/32 -j ACCEPT
--A INPUT -s 10.177.209.38/32 -j ACCEPT
--A INPUT -s 10.179.98.200/32 -j ACCEPT
--A INPUT -s 10.177.209.55/32 -j ACCEPT
--A INPUT -s 10.177.209.104/32 -j ACCEPT
-
-# If we're one of data01 or data02, we have a 192.168.1 private, point to point network.
-# and we should just let stuff flow through.
-
+{% if 'rackspace' == grains['datacenter'] -%}
+{%   for ipaddr in ipaddrs -%}
+{%     if ipaddr.startswith('10.') and not ipaddr.startswith('10.8') -%}
+-A INPUT -s {{ ipaddr }}/32 -j ACCEPT
+{%     endif -%}
+{%   endfor -%}
+{% else -%}
+-A INPUT -s 192.168.0.0/16 -j ACCEPT
+{% endif -%}
 -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
 -A FORWARD -i tun+ -j ACCEPT
