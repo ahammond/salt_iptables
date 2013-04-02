@@ -1,3 +1,5 @@
+{% set ip_addrs = salt['publish.publish']('*', 'network.ip_addrs') %}
+
 {% set iptables = '/etc/iptables-rules' %}
 {{ iptables }}:
   file.managed:
@@ -6,4 +8,4 @@
     - mode: 700
     - source: salt://iptables/files{{ iptables }}.sls
     - template: jinja
-    - ipaddrs: {{ salt['publish.publish']('*', 'network.ip_addrs').values() }}
+    - ipaddrs: {{ [item for sublist in ip_addrs.values() for item in sublist] }}
