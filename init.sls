@@ -3,11 +3,11 @@
 from itertools import chain
 
 iptables = '/etc/iptables-rules'
-gather = salt['publish.publish']('*', 'network.ip_addrs')
+gather = __salt__['publish.publish']('*', 'network.ip_addrs')
 ip_addrs = list(chain.from_iterable(gather.values()))
 
 state(iptables).file.managed(
-    user='root', group='root', mode='700',
+    user='root', group='root', mode='600',
     source='salt://iptables/files{}.sls'.format(iptables),
     template='jinja',
     ipaddrs=ip_addrs
