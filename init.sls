@@ -3,7 +3,7 @@
 from itertools import chain
 
 iptables = '/etc/iptables-rules'
-gather = __salt__['publish.publish']('*', 'network.ip_addrs')
+gather = __salt__['publish.publish']('*', 'network.ip_addrs', '', 'glob', '', 30)
 ip_addrs = sorted(list(chain.from_iterable(gather.values())))
 
 state(iptables).file.managed(
