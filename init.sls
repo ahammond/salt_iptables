@@ -4,7 +4,7 @@ from itertools import chain
 
 iptables = '/etc/iptables-rules'
 gather = __salt__['publish.publish']('*', 'network.ip_addrs')
-ip_addrs = list(chain.from_iterable(gather.values())).sort()
+ip_addrs = list(chain.from_iterable(gather.values())).sorted()
 
 state(iptables).file.managed(
     user='root', group='root', mode='600',
