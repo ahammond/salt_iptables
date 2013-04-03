@@ -3,7 +3,7 @@
 from itertools import chain
 
 # Apparently Salt really doesn't like it when states take longer than 60s to do their job.
-TIMEOUT = 55
+TIMEOUT = 5
 
 iptables = '/etc/iptables-rules.testing'
 gather = __salt__['publish.publish']('*', 'network.ip_addrs', '', 'glob', '', TIMEOUT)
