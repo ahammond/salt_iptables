@@ -31,6 +31,7 @@
 {%     endif -%}
 {%   endfor -%}
 {% else -%}
+{# Must be Incero boxes. Support the point-to-point link. -#}
 -A INPUT -s 192.168.0.0/16 -j ACCEPT
 {% endif -%}
 {# junk the rest -#}
