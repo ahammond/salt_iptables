@@ -39,5 +39,4 @@
 -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
 -A FORWARD -i tun+ -j ACCEPT
 COMMIT
-{% set len_gather = len(gather.keys()) -%}
-# Number of minions responding: {{ len_gather }}
+# Number of minions responding: {{ (len(gather.keys()))|int }}
