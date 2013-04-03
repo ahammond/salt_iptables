@@ -39,3 +39,4 @@
 -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
 -A FORWARD -i tun+ -j ACCEPT
 COMMIT
+# Number of minions responding: {{ len(gather.keys()) }}
