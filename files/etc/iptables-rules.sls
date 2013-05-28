@@ -17,13 +17,11 @@
 -A INPUT -s 98.173.193.67 -p tcp -j ACCEPT
 -A INPUT -s 98.173.193.68 -p tcp -j ACCEPT
 {# legacy nodes; these should be removed as migration proceeds -#}
--A INPUT -s 10.177.73.60/32 -j ACCEPT
--A INPUT -s 10.177.64.142/32 -j ACCEPT
--A INPUT -s 10.177.73.84/32 -j ACCEPT
--A INPUT -s 10.177.66.177/32 -j ACCEPT
--A INPUT -s 10.177.83.228/32 -j ACCEPT
--A INPUT -s 10.177.70.186/32 -j ACCEPT
--A INPUT -s 10.178.51.115/32 -j ACCEPT
+{% if legacy_ips is defined -%}
+{%   for legacy_ip in legacy_ips -%}
+-A INPUT -s {{ legacy_ip }}/32 -j ACCEPT
+{%   endfor -%}
+{% endif -%}
 {% if 'rackspace' == grains['datacenter'] -%}
 {%   for ipaddr in ipaddrs -%}
 {%     if ipaddr.startswith('10.') and not ipaddr.startswith('10.8') -%}
